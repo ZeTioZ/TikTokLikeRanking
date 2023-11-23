@@ -1,23 +1,14 @@
 <!DOCTYPE html>
 <html lang="fr">
     <head>
+        <link rel="favicon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
         <meta charset="utf-8"/>
         <title>{{channel}}'s Like Ranking</title>
     </head>
 
     <body>
-        <h1 style="color:{{font_color}};">{{channel}}'s Top {{list_size}} likers</h1>
-        <span id="like_ranking" style="color:{{font_color}}; font-size:{{font_size}}px;"></span>
-        <script type="text/javascript">
-            var like_ranking = document.getElementById("like_ranking");
-
-            function updater() {
-              fetch('/data')
-              .then(response => response.text())
-              .then(text => (like_ranking.innerHTML = text));
-            }
-
-            setInterval(updater, 1000);
-        </script>
+    <h1 style="color:{{font_color}};">{{channel}}'s Top {{list_size}} likers</h1>
+    <span id="like_ranking" style="color:{{font_color}}; font-size:{{font_size}}px;"></span>
     </body>
+    <script src="{{ url_for('static', filename='scripts/js/likes_handler.js') }}"></script>
 </html>
