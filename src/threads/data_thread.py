@@ -6,11 +6,10 @@ from TikTokLive.types.events import LikeEvent
 
 
 class DataThread(Thread):
-	def __init__(self, channel, list_size, use_cache=False, cached_data=None):
+	def __init__(self, channel, list_size, cached_data=None):
 		Thread.__init__(self)
 		self.daemon = True
 		self.channel = channel
-		self.use_cache = use_cache
 		self.list_size = list_size
 		self.client = TikTokLiveClient(unique_id=channel)
 		self.like_map = cached_data if cached_data is not None else {}
@@ -22,9 +21,8 @@ class DataThread(Thread):
 
 	def update_ranking(self):
 		self.like_map = dict(sorted(self.like_map.items(), key=lambda x: x[1], reverse=True))
-		if self.use_cache:
-			with open("resources/like_cache.json", "w", encoding="utf-8") as cache_file:
-				json.dump(self.like_map, cache_file, ensure_ascii=False)
+		with open("resources/like_cache.json", "w", encoding="utf-8") as cache_file:
+			json.dump(self.like_map, cache_file, ensure_ascii=False)
 
 	def to_string(self):
 		return "<br>".join([f"{user}: {self.like_map[user]}" for user in self.like_map.keys()][:self.list_size]).encode("utf8")

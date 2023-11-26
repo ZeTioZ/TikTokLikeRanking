@@ -17,13 +17,13 @@ def config_loader() -> dict:
 		json_file.seek(0)
 		json.dump(config_dict, json_file, indent=2)
 
-		config_dict["use_cache"] = True if input("Use cache? (y/n): ").lower() == "y" else False
-		if not config_dict["use_cache"]:
+		config_dict["load_cache"] = True if input("Load cache? (y/n): ").lower() == "y" else False
+		if not config_dict["load_cache"]:
 			with open("resources/like_cache.json", "w") as cache_file:
 				cache_file.truncate(0)
 			config_dict["cache"] = {}
-		if config_dict["use_cache"]:
-			print("Using cache...")
+		if config_dict["load_cache"]:
+			print("Loading cache...")
 			with open("resources/like_cache.json", "r", encoding="utf-8") as cache_file:
 				read_file = cache_file.read()
 				cache_dict = json.loads(read_file) if read_file != "" else {}
@@ -48,6 +48,6 @@ async def index():
 if __name__ == '__main__':
 	config_data = config_loader()
 	print(config_data)
-	data_thread: DataThread = DataThread(config_data["channel"], config_data["list_size"], config_data["use_cache"], config_data["cache"])
+	data_thread: DataThread = DataThread(config_data["channel"], config_data["list_size"], config_data["cache"])
 	data_thread.start()
 	app.run()
