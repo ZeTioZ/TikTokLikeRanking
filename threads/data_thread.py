@@ -1,8 +1,9 @@
 import json
 
 from threading import Thread
-from TikTokLive import TikTokLiveClient
-from TikTokLive.types.events import LikeEvent
+
+from TikTokLive.client.client import TikTokLiveClient
+from TikTokLive.events import LikeEvent
 
 
 class DataThread(Thread):
@@ -28,8 +29,8 @@ class DataThread(Thread):
 		return "<br>".join([f"{user}: {self.like_map[user]}" for user in self.like_map.keys()][:self.list_size]).encode("utf8")
 
 	def on_like(self, event: LikeEvent):
-		self.like_map[event.user.nickname] = self.like_map.get(event.user.nickname, 0) + event.likes
+		self.like_map[event.user.nickname] = self.like_map.get(event.user.nickname, 0) + event.count
 		self.update_ranking()
 
 	def add_listeners(self):
-		self.client.add_listener("like", self.on_like)
+		self.client.add_listener(LikeEvent, self.on_like)
