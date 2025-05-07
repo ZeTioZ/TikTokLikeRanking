@@ -3,6 +3,7 @@ import json
 from threading import Thread
 
 from TikTokLive.client.client import TikTokLiveClient
+from TikTokLive.client.errors import UserOfflineError, UserNotFoundError
 from TikTokLive.events import LikeEvent
 
 
@@ -18,7 +19,12 @@ class DataThread(Thread):
 	def run(self):
 		print(f"Like ranking started for {self.channel}'s live!")
 		self.add_listeners()
-		self.client.run()
+		try:
+			self.client.run()
+		except UserOfflineError:
+			print(f"{self.channel} is offline. Exiting...")
+		except UserNotFoundError:
+			print(f"{self.channel} not found or not live enabled. Exiting...")
 
 	def update_ranking(self):
 		self.like_map = dict(sorted(self.like_map.items(), key=lambda x: x[1], reverse=True))
